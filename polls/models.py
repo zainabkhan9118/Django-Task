@@ -1,0 +1,40 @@
+"""Models for the polls application."""
+import datetime
+
+from django.db import models
+from django.utils import timezone
+
+from django.contrib import admin
+
+# Create your models here.
+
+
+class Question(models.Model):
+    """A poll question with publication date."""
+
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField('date published')
+
+    def __str__(self):
+        return self.question_text
+
+    @admin.display(
+        boolean=True,
+        ordering='pub_date',
+        description='Published recently?',
+    )
+    def was_published_recently(self):
+        """Check if the question was published within the last day."""
+        now = timezone.now()
+        return now - datetime.timedelta(days=1) <= self.pub_date <= now
+
+
+class Choice(models.Model):
+    """A choice for a poll question."""
+
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.choice_text
