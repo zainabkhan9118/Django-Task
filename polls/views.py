@@ -1,3 +1,4 @@
+"""Views for the polls application."""
 from django.db.models import F
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
@@ -7,6 +8,8 @@ from .models import Choice, Question
 
 
 class IndexView(generic.ListView):
+    """View for listing recent questions."""
+
     template_name = "polls/index.html"
     context_object_name = "latest_question_list"
 
@@ -22,9 +25,11 @@ class IndexView(generic.ListView):
 
 
 class DetailView(generic.DetailView):
+    """View for displaying a single question's details."""
+
     model = Question
     template_name = "polls/detail.html"
-    
+
     def get_queryset(self):
         """
         Excludes any questions that aren't published yet.
@@ -33,11 +38,14 @@ class DetailView(generic.DetailView):
 
 
 class ResultsView(generic.DetailView):
+    """View for displaying a question's results."""
+
     model = Question
     template_name = "polls/results.html"
 
 
 def vote(request, question_id):
+    """Handle voting on a question."""
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST["choice"])
@@ -51,11 +59,11 @@ def vote(request, question_id):
                 "error_message": "You didn't select a choice.",
             },
         )
-    else:
-        selected_choice.votes = F("votes") + 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
 
-        return render(request, "polls/results.html", {"question": question})
+    selected_choice.votes = F("votes") + 1
+    selected_choice.save()
+    # Always return an HttpResponseRedirect after successfully dealing
+    # with POST data. This prevents data from being posted twice if a
+    # user hits the Back button.
+
+    return render(request, "polls/results.html", {"question": question})

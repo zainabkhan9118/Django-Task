@@ -1,0 +1,15 @@
+[MASTER]
+load-plugins=pylint_django
+ignore=migrations
+
+[MESSAGES CONTROL]
+disable=django-not-configured
+
+[FORMAT]
+max-line-length=100
+
+[BASIC]
+good-names=i,j,k,ex,Run,_,id,pk
+
+[DESIGN]
+max-args=7
